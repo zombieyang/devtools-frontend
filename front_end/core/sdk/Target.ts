@@ -36,21 +36,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.#capabilitiesMask = 0;
     switch (type) {
       case Type.Frame:
-        this.#capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
-            Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
-            Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn | Capability.IO |
-            Capability.Media | Capability.EventBreakpoints;
-        if (parentTarget?.type() !== Type.Frame) {
-          // This matches backend exposing certain capabilities only for the main frame.
-          this.#capabilitiesMask |=
-              Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
-          if (Common.ParsedURL.schemeIs(targetInfo?.url as Platform.DevToolsPath.UrlString, 'chrome-extension:')) {
-            this.#capabilitiesMask &= ~Capability.Security;
-          }
-
-          // TODO(dgozman): we report service workers for the whole frame tree on the main frame,
-          // while we should be able to only cover the subtree corresponding to the target.
-        }
+        this.#capabilitiesMask = Capability.DOM | Capability.JS;
         break;
       case Type.ServiceWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
